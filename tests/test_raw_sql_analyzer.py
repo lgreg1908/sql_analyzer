@@ -14,6 +14,7 @@ class TestRawSQLAnalyzer(unittest.TestCase):
     def setUp(self):
         self.queries = sql_queries
         self.results = results
+        self.invalid_query = ''
         
     def test_perform_full_analysis(self):
         for idx, query in enumerate(self.queries):
@@ -21,6 +22,36 @@ class TestRawSQLAnalyzer(unittest.TestCase):
                 analyzer = RawSQLAnalyzer(query)
                 results = analyzer.perform_full_analysis()
                 self.assertEqual(results, self.results[idx])
+
+    def test_init_exception(self):
+        with self.assertRaises(ValueError):
+            RawSQLAnalyzer(1908)
+
+    def test_analyze_count_functions_exception(self):
+        analyzer = RawSQLAnalyzer(self.invalid_query)
+        with self.assertRaises(Exception) as context:
+            analyzer.analyze_count_functions()
+
+    def test_analyze_count_where_exception(self):
+        analyzer = RawSQLAnalyzer(self.invalid_query)
+        with self.assertRaises(Exception):
+            analyzer.analyze_count_where()
+
+    def test_analyze_count_subqueries_and_depth_exception(self):
+        analyzer = RawSQLAnalyzer(self.invalid_query)
+        with self.assertRaises(Exception):
+            analyzer.analyze_count_subqueries_and_depth()
+
+    def test_analyze_analyze_get_statement_type_exception(self):
+        analyzer = RawSQLAnalyzer(self.invalid_query)
+        with self.assertRaises(Exception):
+            analyzer.analyze_get_statement_type()
+    
+    def test_analyze_count_joins_exception(self):
+        analyzer = RawSQLAnalyzer(self.invalid_query)
+        with self.assertRaises(Exception):
+            analyzer.analyze_count_joins()
+
 
 if __name__ == '__main__':
     unittest.main()
