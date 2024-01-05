@@ -33,10 +33,13 @@ class RawSQLAnalyzer:
         Args:
             query (str): The raw SQL query string to be analyzed.
         """
+        if not isinstance(query, str):
+            raise ValueError("The query must be a string.")
+        
         self.query = query
         self._parsed_query = None
         self._extracted_data: Dict[str, Any] = {}
-    
+
     @property
     def parsed_query(self) -> sqlparse.sql.Statement:
         """
@@ -120,7 +123,7 @@ class RawSQLAnalyzer:
             self._extracted_data["tables"] = tables
             return self._extracted_data["tables"]
         except Exception as e:
-            logger.error(f"Failed to count subqueries: {e}")
+            logger.error(f"Failed to get tables: {e}")
             raise
     
     def analyze_get_statement_type(self) -> str:
